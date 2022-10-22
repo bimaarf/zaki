@@ -17,7 +17,7 @@ class TabunganController extends Controller
     public function store()
     {
         $tabungan = new Tabungan();
-        $tabungan->user_id = Auth::id(); //insert via token by sanctum kalo ndak bisa ganti $request->user_id;
+        $tabungan->user_id = auth('sanctum')->user()->id; //insert via token by sanctum kalo ndak bisa ganti $request->user_id;
         $tabungan->save();
     }
 }
