@@ -22,7 +22,7 @@ class TabunganController extends Controller
     public function store(Request $request)
     {
         $checTab  = Tabungan::where('user_id', auth('sanctum')->user()->id)->first();
-        if (count($checTab) > 1) {
+        if ($checTab) {
             $checTab->user_id = auth('sanctum')->user()->id; //insert via token by sanctum kalo ndak bisa ganti $request->user_id;
             $checTab->tanggal = $request->tanggal;
             $checTab->total = $checTab->total + $request->total;
