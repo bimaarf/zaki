@@ -9,15 +9,31 @@ use Illuminate\Support\Facades\Auth;
 
 class TabunganController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tabungan = Tabungan::all();
-        return $tabungan;
+        if ($request->has('uid')) {
+            $tabungan = Tabungan::where('user_id', $request->uid)->get();
+            return $tabungan;
+        } else {
+            $tabungan = Tabungan::all();
+            return $tabungan;
+        }
     }
-    public function store()
+    public function store(Request $request)
     {
-        $tabungan = new Tabungan();
-        $tabungan->user_id = auth('sanctum')->user()->id; //insert via token by sanctum kalo ndak bisa ganti $request->user_id;
-        $tabungan->save();
+        $checTab  = Tabungan::where('user_id', auth('sanctum')->user()->id)->first();
+        if (count($checTab) > 1) {
+            $checTab->user_id = auth('sanctum')->user()->id; //insert via token by sanctum kalo ndak bisa ganti $request->user_id;
+            $checTab->tanggal = $request->tanggal;
+            $checTab->total = $checTab->total + $request->total;
+            $checTab->update();
+        } else {
+
+            $tabungan = new Tabungan();
+            $tabungan->user_id = auth('sanctum')->user()->id; //insert via token by sanctum kalo ndak bisa ganti $request->user_id;
+            $tabungan->tanggal = $request->tanggal;
+            $tabungan->total = $request->total;
+            $tabungan->save();
+        }
     }
 }
